@@ -17,7 +17,7 @@
 		;
 	
 	data = getData();
-	map = L.map('map').setView([-17.8639, 31.0297], 9);
+	map = L.map('map', {'closePopupOnClick' : true}).setView([-17.8639, 31.0297], 9);
 	popup = L.popup();
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ', {
@@ -25,10 +25,6 @@
 	    maxZoom: 18,
 	    id: 'mapbox.streets'
 	}).addTo(map);
-
-	map.on('click', function (e) {
-		popup.setLatLng(e.latlng).openOn(map);
-	});
 
 	$.each(data, function(index, entry) {
 		var marker = L.marker([entry.latitude, entry.longitude]);
