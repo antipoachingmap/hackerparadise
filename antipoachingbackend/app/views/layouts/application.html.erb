@@ -20,6 +20,8 @@
        <div class="container">
         <%= yield %>
        </div>
+        <%= render("partials/widemap") if @show_jumbotron  %>
+
     </main>
   </body>
 </html>
