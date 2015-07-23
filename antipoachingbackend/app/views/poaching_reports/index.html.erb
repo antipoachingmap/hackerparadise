@@ -12,6 +12,8 @@
   <tbody>
     <% @poaching_reports.each do |poaching_report| %>
       <tr>
+        <td><%= poaching_report.id %></td>
+        <td><%= poaching_report.description %></td>
         <td><%= link_to 'Show', poaching_report %></td>
         <td><%= link_to 'Edit', edit_poaching_report_path(poaching_report) %></td>
         <td><%= link_to 'Destroy', poaching_report, method: :delete, data: { confirm: 'Are you sure?' } %></td>
