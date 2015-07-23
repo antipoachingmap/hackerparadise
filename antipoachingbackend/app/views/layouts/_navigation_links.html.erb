@@ -6,3 +6,9 @@
   <li><%= link_to 'Sign in', new_user_session_path %></li>
   <li><%= link_to 'Sign up', new_user_registration_path %></li>
 <% end %>
+
+<li>
+<button class="btn btn-primary">
+<%= link_to 'Report Poaching Now', new_poaching_report_path, id:"report-poaching-now-btn" %>
+</button>
+</li>
