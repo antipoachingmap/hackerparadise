@@ -1,7 +1,14 @@
 class PoachingReportsController < ApplicationController
   before_action :set_poaching_report, only: [:show, :edit, :update, :destroy]
 
-  skip_before_action :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token
+
+  after_filter :set_access_control_headers
+
+  def set_access_control_headers
+    Headers['Access-Control-Allow-Origin'] = 'http://antipoachingmap.org/*'
+    Headers['Access-Control-Request-Method'] = "GET, POST, OPTIONS"
+  end
 
   # GET /poaching_reports
   # GET /poaching_reports.json
