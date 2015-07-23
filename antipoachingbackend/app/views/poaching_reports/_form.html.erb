@@ -1,15 +1,23 @@
-<h1>_form.html.erb</h1>
-<p>Find me in app/views/poaching_report/</p>
 
-<%= bootstrap_form_for @poaching_report, html: {class: "nifty_form"} do |f| %>
-  <%= f.number_field :latitude, label:"", step: 0.00000001 %>
-  <%= f.number_field :longitude, label:"", step: 0.00000001 %>
-  <%= f.text_area :location, label:"" %>
-  <%= f.select :species, ["Lion", "Rhinoceros", "Elephant", "Pangolin", "Other"], { label: "Species:" }, { class: "selectpicker" } %>
-  <%= f.text_field :victim_count %>
-  <%= f.datetime_select :event_datetime %>
-  <%= f.text_area :description %>
-  
-  
-  <%= f.primary "Submit Report" %>
-<% end %>
+<div class="row">
+  <div class="col-xs-6 col-xs-offset-3">
+    <div class="similar-to-authform">
+
+    <%= bootstrap_form_for @poaching_report, html: {class: ""} do |f| %>
+    <h3>Report Poaching Activity</h3>
+      <%= f.number_field :latitude, label:"", step: 0.00000001 %>
+      <%= f.number_field :longitude, label:"", step: 0.00000001 %>
+      <%= f.text_area :location, label:"" %>
+      <%= f.select :species, ["Lion", "Rhinoceros", "Elephant", "Pangolin", "Other"], { label: "Species:" }, { class: "selectpicker" } %>
+      <%= f.text_field :victim_count %>
+      <%= f.datetime_select :event_datetime %>
+      <%= f.text_area :description %>
+      
+      
+      <%= f.primary "Submit Report" %>
+    <% end %>
+
+    </div>
+
+  </div>
+</div>
