@@ -1,7 +1,7 @@
 class PoachingReportsController < ApplicationController
   before_action :set_poaching_report, only: [:show, :edit, :update, :destroy]
 
-  skip_before_action :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token
 
   # GET /poaching_reports
   # GET /poaching_reports.json
