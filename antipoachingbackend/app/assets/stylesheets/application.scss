@@ -16,13 +16,72 @@
 @import "bootstrap-sprockets";
 @import "framework_and_overrides";
 
-$navbar-default-bg: #000000;
+$navbar-default-bg: #fff;
 $navbar-default-link-color: #3a3836;
-$navbar-default-color: #3a3836;
+$navbar-height: 60px;
 
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700);
 
+$body-bg: #eff4f5;
 
+$font-family-sans-serif: 'Source Sans Pro', sans-serif;
+.navbar-default {
+  font-weight: 600;
+  font-size: 15px;
+  
+  .navbar-brand {
+    padding: 10px 0px;
+    img {
+      height: 40px;
+    }
+  }
+  
+  button.btn-primary {
+    margin-top:13px;
+    padding-left: 24px; 
+    padding-right: 24px; 
+  }
+}
 
+// Buttons
+$btn-primary-bg: #47b6b7;
+$btn-primary-color: #fff;
 
+#report-poaching-now-btn {
+  
+  &:hover {
+    text-decoration: none;
+  }
+  color: white;
+}
+
+#headline-bar {
+  width: 100%;
+}
+.wide {
+  max-width: 100%;
+  width: 100%;
+  background-size: cover;
+}
+div.jumbotron {
+  margin-top: 0px;
+  padding: 0px 0px;
+  background-color: #2f9d9e;
+}
+
+#jumbotron-specific-styles {
+  padding: 20px 0px 36px 0px;
+  h1 {
+    font-size: 36px;
+
+  color: #fff;
+  }
+  h3 {
+    font-size: 20px;
+    margin-top: -6px;
+    color: #fff;
+    opacity: 0.82;
+  }
+}
 
 @import "bootstrap";
