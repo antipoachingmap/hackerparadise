@@ -10,10 +10,10 @@
 		, DATE_TIME_FIELDS = [
 			"When"
 		]
+		, formatter = tableFormatter
 		, data
 		, map
 		, popup
-		, formatter = tableFormatter
 		;
 	
 	data = getData();
@@ -27,7 +27,22 @@
 	}).addTo(map);
 
 	$.each(data, function(index, entry) {
-		var marker = L.marker([entry.latitude, entry.longitude]);
+		var ICON_BASE_URL = 'http://antipoachingmap.org/wp-content/uploads/2015/07/#{species}.png'
+			, icon
+			, species = (entry.species || "").trim()
+			, useCustomIcon = true && species.length && species !== 'Other'
+			;
+			
+		if (useCustomIcon) {
+			icon = L.icon({
+				iconUrl: ICON_BASE_URL.replace('#{species}', species)
+				, iconAnchor: [32, 64]
+			});
+			marker = L.marker([entry.latitude, entry.longitude], {icon: icon});
+		}
+		else {
+			marker = L.marker([entry.latitude, entry.longitude]);
+		}
 			
 		marker.addTo(map)
 			.bindPopup(popup)
@@ -53,6 +68,13 @@
 		});
 
 		return "<table>" + fieldsToShow.join('') + "</table>"
+	}
+
+	function getData() {
+		// var data_url = "https://infinite-inlet-2573.herokuapp.com/poaching_reports.json";
+
+		// return $.getJSON(data_url);
+		return getDummyData();
 	}
 
 })();
