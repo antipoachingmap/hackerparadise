@@ -1,6 +1,8 @@
 class PoachingReportsController < ApplicationController
   before_action :set_poaching_report, only: [:show, :edit, :update, :destroy]
 
+  skip_before_action :verify_authenticity_token
+
   # GET /poaching_reports
   # GET /poaching_reports.json
   def index
@@ -24,8 +26,6 @@ class PoachingReportsController < ApplicationController
   # POST /poaching_reports
   # POST /poaching_reports.json
   def create
-
-    skip_before_action :verify_authenticity_token
 
     @poaching_report = PoachingReport.new(poaching_report_params)
 
