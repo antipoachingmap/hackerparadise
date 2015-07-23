@@ -31,3 +31,4 @@ One good way of testing the sms functionality is against a locally running serve
 
 ## Deployment
 
+`git subtree push --prefix antipoachingbackend heroku master`

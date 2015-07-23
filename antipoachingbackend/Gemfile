@@ -55,3 +55,4 @@ end
 
 gem 'twilio-ruby', '4.2.1'
 gem 'figaro', '1.1.1'
+gem 'rails_12factor', group: :production

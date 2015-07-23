@@ -24,6 +24,9 @@ class PoachingReportsController < ApplicationController
   # POST /poaching_reports
   # POST /poaching_reports.json
   def create
+
+    skip_before_action :verify_authenticity_token
+
     @poaching_report = PoachingReport.new(poaching_report_params)
 
     respond_to do |format|
