@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
+  resources :poaching_reports
   get 'pages/index'
 
   # Root must be defined for devise
