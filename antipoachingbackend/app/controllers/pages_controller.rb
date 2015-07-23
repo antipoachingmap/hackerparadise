@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
   def index
-    @report = PoachingReport.new
+    @show_jumbotron = true
   end
 end
