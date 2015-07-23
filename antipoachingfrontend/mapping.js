@@ -55,7 +55,7 @@
 		}
 			
 		//marker.addTo(map)
-		marker.bindPopup(popup)
+		marker.bindPopup(popup, {offset: [0, -44]})
 			.on('click', function(e) {
 				marker.setPopupContent(makePopupContent(entry));
 			});
