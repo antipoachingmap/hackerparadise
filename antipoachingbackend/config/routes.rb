@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  devise_for :users
+  get 'pages/index'
+
+  # Root must be defined for devise
+  root to: "pages#index"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
