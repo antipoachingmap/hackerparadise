@@ -14,4 +14,15 @@
  */
 
 @import "bootstrap-sprockets";
+@import "framework_and_overrides";
+
+$navbar-default-bg: #000000;
+$navbar-default-link-color: #3a3836;
+$navbar-default-color: #3a3836;
+
+
+
+
+
+
 @import "bootstrap";
