@@ -14,10 +14,11 @@
 		, data
 		, map
 		, popup
+		, speciesLayers = {}
 		;
 	
 	data = getData();
-	map = L.map('map', {'closePopupOnClick' : true}).setView([-17.8639, 31.0297], 9);
+	map = L.map('map', {scrollWheelZoom: false}).setView([-17.8639, 31.0297], 9);
 	popup = L.popup();
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ', {
@@ -30,6 +31,7 @@
 		var ICON_BASE_URL = 'http://antipoachingmap.org/wp-content/uploads/2015/07/#{species}.png'
 			, icon
 			, species = (entry.species || "").trim()
+			, layer
 			, useCustomIcon = true && species.length && species !== 'Other'
 			;
 			
@@ -43,13 +45,28 @@
 		else {
 			marker = L.marker([entry.latitude, entry.longitude]);
 		}
+
+		layer = speciesLayers[species]
+		if (layer) {
+			layer.push(marker);
+		} 
+		else {
+			speciesLayers[species] = [marker];
+		}
 			
-		marker.addTo(map)
-			.bindPopup(popup)
+		//marker.addTo(map)
+		marker.bindPopup(popup, {offset: [0, -44]})
 			.on('click', function(e) {
 				marker.setPopupContent(makePopupContent(entry));
 			});
 	});
+
+	$.each(speciesLayers, function(species, layer) {
+		speciesLayers[species] = L.layerGroup(layer).addTo(map);
+	});
+
+	L.control.layers(null, speciesLayers).addTo(map);
+
 
 	function tableFormatter(label, value) {
 		value = $.inArray(label, DATE_TIME_FIELDS) !== -1 ?
