@@ -12,9 +12,16 @@
     <header>
       <%= render 'layouts/navigation' %>
     </header>
+
     <main role="main">
        <%= render 'layouts/messages' %>
-       <%= yield %>
+      
+        <%= render("partials/jumbotron") if @show_jumbotron  %>
+       <div class="container">
+        <%= yield %>
+       </div>
+        <%= render("partials/widemap") if @show_jumbotron  %>
+
     </main>
   </body>
 </html>
