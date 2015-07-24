@@ -15,9 +15,9 @@
 		, map
 		, popup
 		, speciesLayers = {}
+		, USE_DUMMY_DATA = false
 		;
 	
-	data = getData();
 	map = L.map('map', {scrollWheelZoom: false}).setView([-17.8639, 31.0297], 9);
 	popup = L.popup();
 
@@ -27,46 +27,49 @@
 	    id: 'mapbox.streets'
 	}).addTo(map);
 
-	$.each(data, function(index, entry) {
-		var ICON_BASE_URL = 'http://antipoachingmap.org/wp-content/uploads/2015/07/#{species}.png'
-			, icon
-			, species = (entry.species || "").trim()
-			, layer
-			, useCustomIcon = true && species.length && species !== 'Other'
-			;
-			
-		if (useCustomIcon) {
-			icon = L.icon({
-				iconUrl: ICON_BASE_URL.replace('#{species}', species)
-				, iconAnchor: [32, 64]
-			});
-			marker = L.marker([entry.latitude, entry.longitude], {icon: icon});
-		}
-		else {
-			marker = L.marker([entry.latitude, entry.longitude]);
-		}
+	$.when(getMarkers()).then(onMarkers);
 
-		layer = speciesLayers[species]
-		if (layer) {
-			layer.push(marker);
-		} 
-		else {
-			speciesLayers[species] = [marker];
-		}
-			
-		//marker.addTo(map)
-		marker.bindPopup(popup, {offset: [0, -44]})
-			.on('click', function(e) {
-				marker.setPopupContent(makePopupContent(entry));
-			});
-	});
-
-	$.each(speciesLayers, function(species, layer) {
-		speciesLayers[species] = L.layerGroup(layer).addTo(map);
-	});
-
-	L.control.layers(null, speciesLayers).addTo(map);
-
+	function onMarkers(data) {
+		$.each(data, function(index, entry) {
+			var ICON_BASE_URL = 'http://antipoachingmap.org/wp-content/uploads/2015/07/#{species}.png'
+				, icon
+				, species = (entry.species || "").trim()
+				, layer
+				, useCustomIcon = true && species.length && species !== 'Other'
+				;
+				
+			if (useCustomIcon) {
+				icon = L.icon({
+					iconUrl: ICON_BASE_URL.replace('#{species}', species)
+					, iconAnchor: [32, 64]
+				});
+				marker = L.marker([entry.latitude, entry.longitude], {icon: icon});
+			}
+			else {
+				marker = L.marker([entry.latitude, entry.longitude]);
+			}
+	
+			layer = speciesLayers[species]
+			if (layer) {
+				layer.push(marker);
+			} 
+			else {
+				speciesLayers[species] = [marker];
+			}
+				
+			//marker.addTo(map)
+			marker.bindPopup(popup, {offset: [0, -44]})
+				.on('click', function(e) {
+					marker.setPopupContent(makePopupContent(entry));
+				});
+		});	
+		
+		$.each(speciesLayers, function(species, layer) {
+			speciesLayers[species] = L.layerGroup(layer).addTo(map);
+		});
+	
+		L.control.layers(null, speciesLayers).addTo(map);
+	}
 
 	function tableFormatter(label, value) {
 		value = $.inArray(label, DATE_TIME_FIELDS) !== -1 ?
@@ -87,11 +90,13 @@
 		return "<table>" + fieldsToShow.join('') + "</table>"
 	}
 
-	function getData() {
-		// var data_url = "https://infinite-inlet-2573.herokuapp.com/poaching_reports.json";
+	function getMarkers() {
+		var data_url = 
+			"https://infinite-inlet-2573.herokuapp.com/poaching_reports.json";
 
-		// return $.getJSON(data_url);
-		return getDummyData();
+		return !USE_DUMMY_DATA ? 
+			$.getJSON(data_url, onMarkers) : 
+			getDummyData();
 	}
 
 })();
