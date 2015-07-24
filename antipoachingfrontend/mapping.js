@@ -1,22 +1,9 @@
 (function() {
-	var POPUP_FIELDS = {
-		  "description": ""
-		  , "location": "Location"
-		  , "species": "Species"
-		  , "victim_count": "# killed"
-		  , "event_datetime": "When"		  
-	//	  , "raw_sms": null
-		}
-		, DATE_TIME_FIELDS = [
-			"When"
-		]
-		, formatter = tableFormatter
-		, data
+	var USE_DUMMY_DATA = false
+		, POPUP_FORMATTER = tableFormatter
+		, HARARE_LAT_LNG = [-17.8639, 31.0297]
 		, map
 		, popup
-		, speciesLayers = {}
-		, HARARE_LAT_LNG = [-17.8639, 31.0297]
-		, USE_DUMMY_DATA = false
 		;
 	
 	map = L.map('map', {scrollWheelZoom: false}).setView(HARARE_LAT_LNG, 9);
@@ -29,78 +16,105 @@
 	}).addTo(map);
 
 	$.when(getMarkers()).then(onMarkers);
+	// THE END
 
 
+	// FUNCTIONS start here
 	function onMarkers(data) {
-		$(data).filter(ensureRequiredFields).each(function(index, post) {
-			var ICON_BASE_URL = 'http://antipoachingmap.org/wp-content/uploads/2015/07/#{species}.png'
-				, icon
-				, species = post.species
-				, layer
-				, useCustomIcon
-				;
+		var speciesLayers = {}
+			, baseLayers = null; // add baseLayers to enable toggling map types
 
-			// remove code using 'useCustomIcon' if we have a default icon corresponding to 'Other' species				
-			useCustomIcon = species.length && species !== 'Other'
-			if (useCustomIcon) {
-				icon = L.icon({
-					iconUrl: ICON_BASE_URL.replace('#{species}', species)
-					, iconAnchor: [32, 64]	// our icons have a different origin (0,0) then the out of the box ones
-				});
-				marker = L.marker([post.latitude, post.longitude], {icon: icon});
-			}
-			else {
-				marker = L.marker([post.latitude, post.longitude]);
-			}
-	
-			layer = speciesLayers[species];
-			if (layer) {
-				layer.push(marker);
-			} 
-			else {
-				speciesLayers[species] = [marker];
-			}
+		$(data)
+			.filter(ensureRequiredFields)
+			.each(function(index, post) {
+				var marker = makeMarker(post)
+					, species = post.species
+					, layer = speciesLayers[species]
+					;
 				
-			//marker.addTo(map)
-			marker.bindPopup(popup, {offset: [0, -44]})
-				.on('click', function(e) {
-					marker.setPopupContent(makePopupContent(post));
-				});
-		});	
+				if (layer) {
+					layer.push(marker);
+				}
+				else {
+					speciesLayers[species] = [marker];
+				}
+			});
 		
 		$.each(speciesLayers, function(species, layer) {
+			// will need to merge instead of create new layers 
+			// if we get multiple feeds of events from server
 			speciesLayers[species] = L.layerGroup(layer).addTo(map);
 		});
-	
-		L.control.layers(null, speciesLayers).addTo(map);
+
+		L.control.layers(baseLayers, speciesLayers).addTo(map);
 	}
 
-	function tableFormatter(label, value) {
+	function makeMarker(post) {
+		var ICON_BASE_URL = 'http://antipoachingmap.org/wp-content/uploads/2015/07/#{species}.png'
+			, icon
+			, marker
+			, species = post.species
+			, useCustomIcon
+			;
+
+		// we can remove code using 'useCustomIcon' if we have a default icon corresponding to 'Other' species				
+		useCustomIcon = species.length && species !== 'Other'
+		if (useCustomIcon) {
+			icon = L.icon({
+				iconUrl: ICON_BASE_URL.replace('#{species}', species)
+				, iconAnchor: [32, 64]	// our icons have a different origin (0,0) then the out of the box ones
+			});
+			marker = L.marker([post.latitude, post.longitude], {icon: icon});
+		}
+		else {
+			marker = L.marker([post.latitude, post.longitude]);
+		}
+
+		marker
+			.bindPopup(popup, {offset: [0, -44]})
+			.on('click', function(e) {
+				marker.setPopupContent(makePopupContent(post));
+			});
+
+		return marker;
+	}
+
+	function makePopupContent(post) {
+		var POPUP_FIELDS = {
+			  "description": ""
+			  , "location": "Location"
+			  , "species": "Species"
+			  , "victim_count": "# killed"
+			  , "event_datetime": "When"
+			}
+
+		return POPUP_FORMATTER(post, POPUP_FIELDS);
+	}
+
+	// EWWW, tables!!!  Quick and dirty...
+	// IF you really hate them, make another formatter and assign it to
+	// POPUP_FORMATTER at the beginning of this file
+	function tableFormatter(post, fieldsToShow) {
+		var rows = $.map(fieldsToShow, function(label, field) {
+			var value = post[field];
+			return value ? tableRowFormatter(label, value) : null;
+		});
+
+		return "<table>" + rows.join('') + "</table>";
+	}
+
+	function tableRowFormatter(label, value) {
+		var DATE_TIME_FIELDS = [
+			"When"
+		];
+
 		value = $.inArray(label, DATE_TIME_FIELDS) !== -1 ?
 			new Date(value).toString() :
 			value;
 
-		return label ? 
+		return label ?
 			"<tr><td>" + label + "</td><td>" + value + "</td></tr>" :
 			"<tr><td colspan='2'>" + value + "</td></tr>" ;
-	}
-
-	function makePopupContent(post) {
-		var fieldsToShow = $.map(POPUP_FIELDS, function(label, field) {
-			value = post[field];
-			return value ? formatter(label, value) : null;
-		});
-
-		return "<table>" + fieldsToShow.join('') + "</table>"
-	}
-
-	function getMarkers() {
-		var data_url = 
-			"https://infinite-inlet-2573.herokuapp.com/poaching_reports.json";
-
-		return !USE_DUMMY_DATA ? 
-			$.getJSON(data_url, onMarkers) : 
-			getDummyData();
 	}
 
 	function ensureRequiredFields(index, post) {
@@ -131,6 +145,15 @@
 		}
 		
 		return !isInvalid;
+	}
+
+	function getMarkers() {
+		var data_url =
+			"https://infinite-inlet-2573.herokuapp.com/poaching_reports.json";
+
+		return !USE_DUMMY_DATA ?
+			$.getJSON(data_url) :
+			getDummyData();	// defined in getDummyData.js
 	}
 
 })();
