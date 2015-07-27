@@ -12,11 +12,11 @@ A simple display of the data is rendered with leafletjs. This page hits the rail
 A full wordpress site is used as a companion to this app, where the simple feed display is integrated into a page within wordpress.
 
 
-## Development
+== Development
 
-## Testing
+== Testing
 
-### SMS functionality
+=== SMS functionality
 
 The twilio api is integrated into this app to allow units in the field to text a phone number with a report. To set this up, you need to purchase a twilio phone number and set the webhook.
 
@@ -29,6 +29,6 @@ One good way of testing the sms functionality is against a locally running serve
 * Send an SMS to the number where you setup the webhook
 * Watch as a PoachingReport object appears in the database and the "dirty" list of the UI.
 
-## Deployment
+== Deployment
 
 `git subtree push --prefix antipoachingbackend heroku master`
