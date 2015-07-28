@@ -20,7 +20,7 @@ A full wordpress site is used as a companion to this app, where the simple feed 
 
 The twilio api is integrated into this app to allow units in the field to text a phone number with a report. To set this up, you need to purchase a twilio phone number and set the webhook.
 
-The endpoint to set in twilio is ` /twilio/sms `. So if you deploy to heroku, you could set the webhook to something like: `http://hidden-fjord-7117.herokuapp.com/twilio/sms`
+The endpoint to set in twilio is ` /twilio/sms `. So when you deploy to heroku, you set the webhook to something like: `http://glacial-ocean-2318.herokuapp.com/twilio/sms`
 
 One good way of testing the sms functionality is against a locally running server via `ngrok`.
 * Start the server via `rails server` (make sure postgres is running)
@@ -42,7 +42,7 @@ Here's the high level details:
 * ` heroku git:remote -a glacial-ocean-2318 `
 * ` heroku accounts:set dev@antipoachingmap.org `
 
-
+For SMS functionality, you'll also have to set the env vars via
 
 We only push the antipoachingbackend folder to remote, so you need to use the following command at root:
 
