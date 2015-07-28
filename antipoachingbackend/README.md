@@ -18,6 +18,8 @@ A full wordpress site is used as a companion to this app, where the simple feed 
 
 ### SMS functionality
 
+Currently the system is setup so that an SMS to number +34920050065 with format: "17.8333, 31.0500 , 3 Rhinos, Horns Removed" will pipe into the database as a dirty PoachingReport model with the folowing fields populated: lat, long, victim count, species and description
+
 The twilio api is integrated into this app to allow units in the field to text a phone number with a report. To set this up, you need to purchase a twilio phone number and set the webhook.
 
 The endpoint to set in twilio is ` /twilio/sms `. So when you deploy to heroku, you set the webhook to something like: `http://glacial-ocean-2318.herokuapp.com/twilio/sms`

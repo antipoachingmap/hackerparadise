@@ -19,6 +19,7 @@ class TwilioController < ApplicationController
       return
     end
 
+    # Example msg: "17.8333, 31.0500 , 3 Rhinos, Horns Removed"
 
     report = PoachingReport.create do |report|
 
